@@ -4,11 +4,14 @@ package br.com.procardio.api.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import br.com.procardio.api.dto.UsuarioDTO;
 import br.com.procardio.api.model.Usuario;
 import br.com.procardio.api.repository.UsuarioRepository;
 
+
+@Service
 public class UsuarioService {
 
    @Autowired

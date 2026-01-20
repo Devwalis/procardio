@@ -4,12 +4,14 @@ package br.com.procardio.api.model;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.JoinColumn;
+import java.util.Objects;
 
 import br.com.procardio.api.dto.UsuarioDTO;
 import br.com.procardio.api.enums.Perfil;
@@ -70,6 +72,16 @@ public class Usuario implements UserDetails {
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
         usuario.setSenha(dto.senha());
+
+        if(Objects.nonNull(dto.perfis())){
+        dto.perfis().stream().forEach(perfil -> {
+              if(Objects.nonNull(perfil)){
+                usuario.adicionarPerfil(perfil);
+
+        }
+          });
+        }
+
         if(dto.cep() != null || dto.numero() != null || dto.complemento() != null){
             Endereco endereco = new Endereco();
 
@@ -86,7 +98,9 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return this.perfis.stream()
+        .map(perfil -> new SimpleGrantedAuthority(perfil.getRole()))
+        .collect(Collectors.toList());
 
     }
         @Override
