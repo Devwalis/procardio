@@ -26,7 +26,6 @@ public class Consulta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
     @Column(nullable = false)
@@ -34,6 +33,7 @@ public class Consulta {
     private Usuario paciente;
 
     @ManyToOne
+    @JoinColumn(name = "medico_id", nullable = false)
     private Medico medico;
 
     @Column(nullable = false)

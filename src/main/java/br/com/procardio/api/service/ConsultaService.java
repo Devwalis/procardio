@@ -28,6 +28,35 @@ public class ConsultaService {
         return consultaRepository.save(consulta);
     }
 
+    public Consulta atualizarConsulta(Long id, Consulta consultaAtualizada){
+   //verificar se conflito de horário
+     Consulta consultaExistente = buscarConsultaPorId(id);
+     if(consultaExistente == null){
+        return null;
+     }
+     verificarConflitoAgendamentoParaAtualizacao(id, consultaAtualizada);
+        consultaExistente.setPaciente(consultaAtualizada.getPaciente());
+        consultaExistente.setMedico(consultaAtualizada.getMedico());
+        consultaExistente.setDataHora(consultaAtualizada.getDataHora());
+        return consultaRepository.save(consultaExistente);
+    }
+
+    private void verificarConflitoAgendamento(Consulta consulta){
+        Optional<Consulta> consultaExistente =  consultaRepository.findByMedico_IdAndDataHora(consulta.getMedico().getId(), consulta.getDataHora());
+        if(consultaExistente.isPresent()){
+            throw new ConflitoAgendamentoException("Conflito de agendamento: o médico já possui uma consulta marcada para este horário");
+        }
+    }
+
+    private void verificarConflitoAgendamentoParaAtualizacao(Long idConsultaAtual, Consulta consultaAtualizada){
+        Optional<Consulta> consultaExistente = consultaRepository.findByMedico_IdAndDataHora(consultaAtualizada.getMedico().getId(), consultaAtualizada.getDataHora());
+        if(consultaExistente.isPresent() && !consultaExistente.get().getId().equals(idConsultaAtual)){
+            throw new ConflitoAgendamentoException("Conflito de agendamento: o médico já possui uma consulta marcada para este horário");
+        }
+    }
+     
+
+
 
     public List<Consulta> listarConsultas(){
         return consultaRepository.findAll();

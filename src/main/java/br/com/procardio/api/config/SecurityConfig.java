@@ -28,6 +28,13 @@ public class SecurityConfig {
                     .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(req -> {
                         req.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
+                          req.requestMatchers(HttpMethod.GET, "/api/consultas").hasAnyRole("ADMIN", "PACIENTE", "MEDICO");
+                    req.requestMatchers(HttpMethod.GET, "/api/consultas/**").hasAnyRole("ADMIN", "PACIENTE", "MEDICO");
+                    req.requestMatchers(HttpMethod.POST, "/api/consultas").hasAnyRole("ADMIN", "PACIENTE");
+                    req.requestMatchers(HttpMethod.PUT, "/api/consultas/**").hasAnyRole("ADMIN", "PACIENTE");
+                    req.requestMatchers(HttpMethod.DELETE, "/api/consultas/**").hasRole("ADMIN");
+                    req.requestMatchers(HttpMethod.GET, "/api/consultas/minhas-consultas").hasRole("PACIENTE");
+                    req.requestMatchers(HttpMethod.GET, "/api/consultas/minha-agenda").hasRole("MEDICO");
                         req.anyRequest().authenticated();
                     })
                     .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 public record ConsultaDTO(
 
     @NotNull(message = "O ID do paciente é obrigatório")
-    Long pacientId,
+    Long pacienteId,
 
     @NotNull(message = "O ID do médico é obrigatório")
     Long medicoId,
