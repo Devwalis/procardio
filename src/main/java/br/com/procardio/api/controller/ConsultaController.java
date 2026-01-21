@@ -1,5 +1,8 @@
 package br.com.procardio.api.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,9 @@ import br.com.procardio.api.service.MedicoService;
 import br.com.procardio.api.service.UsuarioService;
 import br.com.procardio.api.model.Medico;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/consultas")
@@ -76,6 +82,21 @@ public ResponseEntity<Void> deletarConsulta(@PathVariable Long id){
     }
     consultaService.deletarConsulta(id);
     return ResponseEntity.noContent().build();
+}
+
+
+@GetMapping("/minhas-consultas")
+@PreAuthorize("hasRole('PACIENTE')")
+public ResponseEntity<List<ConsultaResponseDTO>> minhaAgenda(@RequestParam (required = false) Long medicoId) {
+
+ 
+
+    List<Consulta> consultas = consultaService.buscarConsultasPorMedico(medicoId);
+    List<ConsultaResponseDTO> responses = consultas.stream()
+            .map(ConsultaResponseDTO::new)
+            .collect(Collectors.toList());
+
+    return ResponseEntity.ok(responses);
 }
 
 
