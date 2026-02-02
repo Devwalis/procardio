@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.procardio.api.service.MedicoService;
-import lombok.Delegate;
+
 
 @RestController
 @RequestMapping("/api/medicos")
